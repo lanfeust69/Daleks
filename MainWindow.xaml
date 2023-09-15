@@ -1,0 +1,15 @@
+﻿<Window x:Class="Daleks.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Daleks"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="900" Width="1600">
+    <Grid>
+        <Canvas Name="GameCanvas" HorizontalAlignment="Left" Height="830" Margin="10,10,0,0" VerticalAlignment="Top" Width="1580"/>
+        <TextBox Name="MovesTextBox" HorizontalAlignment="Left" Height="27" Margin="10,0,0,10" TextWrapping="Wrap" Text="{Binding Path=Moves, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Bottom" Width="1580"
+                 SelectionChanged="TextBox_SelectionChanged" />
+
+    </Grid>
+</Window>
