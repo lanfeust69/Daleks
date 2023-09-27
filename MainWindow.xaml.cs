@@ -1,12 +1,6 @@
-﻿using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Daleks
@@ -24,33 +18,17 @@ namespace Daleks
         List<(int, int)> Daleks { get; set; } = new();
 
         SolidColorBrush myBrush = new SolidColorBrush { Color = Colors.Blue };
+
         SolidColorBrush dalekBrush = new SolidColorBrush { Color = Colors.Red };
 
         public MainWindow()
         {
-            const string s = "56 111 18 51 106 51 51 95 97 111 18 120 51 59 52 51 51 58 77 88 55 111 75 88 71 79";
-            var coords = s.Split().Select(int.Parse).ToList();
-            XMe = XMin = XMax = coords[^2];
-            YMe = YMin = YMax = coords[^1];
-            for (int i = 0; i < coords.Count / 2 - 1; i++)
-            {
-                int x = coords[i * 2], y = coords[i * 2 + 1];
-                XMin = Math.Min(XMin, x);
-                XMax = Math.Max(XMax, x);
-                YMin = Math.Min(YMin, y);
-                YMax = Math.Max(YMax, y);
-                Daleks.Add((x, y));
-            }
-            XMin -= 10;
-            XMax += 10;
-            YMin -= 10;
-            YMax += 10;
-
             InitializeComponent();
+        }
 
-            XScale = GameCanvas.Width / (XMax - XMin);
-            YScale = GameCanvas.Height / (YMax - YMin);
-
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            Reset();
             DrawGame();
         }
 
@@ -121,7 +99,7 @@ namespace Daleks
                 s += $"{xd} {yd}";
             }
             s += $" {x} {y}" + crashStr;
-            Console.WriteLine(s);
+            CurrentPosLabel.Content = s;
             return (x, y, daleks);
         }
 
@@ -155,8 +133,62 @@ namespace Daleks
             DrawGame();
         }
 
+        private void Reset()
+        {
+            Daleks.Clear();
+            //const string s = "56 111 18 51 106 51 51 95 97 111 18 120 51 59 52 51 51 58 77 88 55 111 75 88 71 79";
+            string s = InputTextBox.Text;
+            List<int> coords;
+            if (string.IsNullOrWhiteSpace(s))
+            {
+                coords = new List<int> { 0, 0 };
+            }
+            else
+            {
+                try
+                {
+                    coords = s.Split().Select(int.Parse).ToList();
+                    if (coords.Count % 2 != 0)
+                        throw new Exception("need an even number of integers to form coordinates");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Invalid input : {ex}");
+                    return;
+                }
+            }
+
+            XMe = XMin = XMax = coords[^2];
+            YMe = YMin = YMax = coords[^1];
+            for (int i = 0; i < coords.Count / 2 - 1; i++)
+            {
+                int x = coords[i * 2], y = coords[i * 2 + 1];
+                XMin = Math.Min(XMin, x);
+                XMax = Math.Max(XMax, x);
+                YMin = Math.Min(YMin, y);
+                YMax = Math.Max(YMax, y);
+                Daleks.Add((x, y));
+            }
+            XMin -= 10;
+            XMax += 10;
+            YMin -= 10;
+            YMax += 10;
+
+            XScale = GameCanvas.ActualWidth / (XMax - XMin);
+            YScale = GameCanvas.ActualHeight / (YMax - YMin);
+
+            Moves = "";
+            Step = 0;
+        }
+
         private void TextBox_SelectionChanged(object sender, RoutedEventArgs e)
         {
+            UpdateGame();
+        }
+
+        private void Reset_Click(object sender, RoutedEventArgs e)
+        {
+            Reset();
             UpdateGame();
         }
     }

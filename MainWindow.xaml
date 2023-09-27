@@ -5,11 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Daleks"
         mc:Ignorable="d"
-        Title="MainWindow" Height="900" Width="1600">
+        Title="MainWindow" Height="900" Width="1600" Loaded="Window_Loaded">
     <Grid>
-        <Canvas Name="GameCanvas" HorizontalAlignment="Left" Height="830" Margin="10,10,0,0" VerticalAlignment="Top" Width="1580"/>
-        <TextBox Name="MovesTextBox" HorizontalAlignment="Left" Height="27" Margin="10,0,0,10" TextWrapping="Wrap" Text="{Binding Path=Moves, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Bottom" Width="1580"
+        <Canvas Name="GameCanvas" HorizontalAlignment="Stretch" Height="auto" Margin="10,10,10,121" VerticalAlignment="Stretch" Width="auto"/>
+        <Label Name="CurrentPosLabel" HorizontalAlignment="Stretch" Height="27" Margin="10,0,10,84" VerticalAlignment="Bottom" Width="auto"/>
+        <TextBox Name="MovesTextBox" Text="{Binding Path=Moves, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" Height="27" Margin="10,0,10,47" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="auto"
                  SelectionChanged="TextBox_SelectionChanged" />
+        <TextBox Name="InputTextBox" Text="" HorizontalAlignment="Stretch" Height="27" Margin="10,0,267,10" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="auto"/>
+        <Button Content="Reset" Height="27" Margin="0,0,10,10" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="247" Click="Reset_Click"/>
 
     </Grid>
 </Window>
