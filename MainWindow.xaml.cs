@@ -32,81 +32,48 @@ namespace Daleks
             DrawGame();
         }
 
-        private (int, int, List<(int, int)>) Play()
+        private (bool, int, int, List<(int, int)>) Play()
         {
-            var daleks = Daleks.ToList();
-            int x = XMe, y = YMe;
+            var game = new Game((XMe, YMe), Daleks);
             string crashStr = "";
-            for (int i = 0; i < Step; i++)
-            {
-                // 1 - move
-                switch (Moves[i])
-                {
-                    case 'u':
-                        y++;
-                        break;
-                    case 'd':
-                        y--;
-                        break;
-                    case 'r':
-                        x++;
-                        break;
-                    case 'l':
-                        x--;
-                        break;
-                }
-                // 2 - if we moved into a dalek, that's bad, even if there are *2* (which will immediately crash)
-                if (daleks.Contains((x, y)))
-                    return (0, 0, new List<(int, int)>()); // we lost :-(
-                // 3 - only now do we remove crashed daleks
-                var crashed = new HashSet<int>();
-                for (int j = 0; j < daleks.Count - 1; j++)
-                {
-                    if (daleks[j] == (x, y))
-                        return (0, 0, new List<(int, int)>()); // we lost :-(
-                    if (crashed.Contains(j))
-                        continue;
-                    for (int k = j + 1; k < daleks.Count; k++)
-                    {
-                        if (daleks[j] == daleks[k])
-                        {
-                            if (i == Step - 1)
-                                crashStr = (string.IsNullOrEmpty(crashStr) ? "  --  crash at " : " and ") + $"({daleks[j].Item1}, {daleks[j].Item2})";
-                            crashed.Add(j);
-                            crashed.Add(k);
-                        }
-                    }
-                }
-                foreach (int remove in crashed.OrderDescending())
-                    daleks.RemoveAt(remove);
+            for (int i = 0; !game.IsLost && i < Step; i++)
+                crashStr = game.Play(Moves[i]);
 
-                // 4 - non crashed daleks move
-                var movedDaleks = daleks.Select(dalek =>
-                    (dalek.Item1 < x ? dalek.Item1 + 1 : dalek.Item1 > x ? dalek.Item1 - 1 : dalek.Item1,
-                     dalek.Item2 < y ? dalek.Item2 + 1 : dalek.Item2 > y ? dalek.Item2 - 1 : dalek.Item2)).ToList();
-                for (int j = 0; j < movedDaleks.Count - 1; j++)
-                {
-                    if (movedDaleks[j] == (x, y))
-                        return (0, 0, new List<(int, int)>()); // we lost :-(
-                }
-                daleks = movedDaleks;
+            if (game.IsLost)
+            {
+                CurrentPosLabel.Content = crashStr;
+                return (false, 0, 0, Enumerable.Empty<(int, int)>().ToList());
             }
             var s = "";
-            foreach (var (xd, yd) in daleks)
+            foreach (var (xd, yd) in game.Daleks)
             {
                 if (s != "")
                     s += " ";
                 s += $"{xd} {yd}";
             }
-            s += $" {x} {y}" + crashStr;
+            s += $" {game.Player.x} {game.Player.y}";
+            if (!string.IsNullOrEmpty(crashStr))
+                s += " -- " + crashStr;
             CurrentPosLabel.Content = s;
-            return (x, y, daleks);
+            return (true, game.Player.x, game.Player.y, game.Daleks);
         }
 
         private void DrawGame()
         {
-            var (xMe, yMe, daleks) = Play();
+            var (ok, xMe, yMe, daleks) = Play();
             GameCanvas.Children.Clear();
+            if (!ok)
+            {
+                TextBlock textBlock = new TextBlock();
+                textBlock.Text = "EXTERMINATE !!!";
+                textBlock.Foreground = dalekBrush;
+                textBlock.FontSize = 96;
+                textBlock.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                Canvas.SetLeft(textBlock, (GameCanvas.ActualWidth - textBlock.DesiredSize.Width) / 2);
+                Canvas.SetTop(textBlock, (GameCanvas.ActualHeight - textBlock.DesiredSize.Height) / 2);
+                GameCanvas.Children.Add(textBlock);
+                return;
+            }
             var me = new Rectangle();
             me.Width = XScale;
             me.Height = YScale;
