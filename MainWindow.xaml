@@ -11,8 +11,8 @@
         <Label Name="CurrentPosLabel" HorizontalAlignment="Stretch" Height="27" Margin="10,0,10,84" VerticalAlignment="Bottom" Width="auto"/>
         <TextBox Name="MovesTextBox" Text="{Binding Path=Moves, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" Height="27" Margin="10,0,10,47" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="auto"
                  SelectionChanged="TextBox_SelectionChanged" />
-        <TextBox Name="InputTextBox" Text="" HorizontalAlignment="Stretch" Height="27" Margin="10,0,267,10" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="auto"/>
-        <Button Content="Reset" Height="27" Margin="0,0,10,10" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="247" Click="Reset_Click"/>
-
+        <TextBox Name="InputTextBox" Text="" HorizontalAlignment="Stretch" Height="27" Margin="10,0,268,10" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="auto"/>
+        <Button Content="Reset" Height="27" Margin="0,0,10,10" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="119" Click="Reset_Click"/>
+        <Button Content="Solve" Height="27" Margin="0,0,139,10" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="119" Click="Solve_Click"/>
     </Grid>
 </Window>

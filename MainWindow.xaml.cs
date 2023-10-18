@@ -158,5 +158,29 @@ namespace Daleks
             Reset();
             UpdateGame();
         }
+
+        private void Solve_Click(object sender, RoutedEventArgs e)
+        {
+            var (ok, xMe, yMe, daleks) = Play();
+            if (!ok)
+            {
+                CurrentPosLabel.Content = $"Already lost !";
+                return;
+            }
+
+            var solver = new Game((xMe, yMe), daleks);
+            string solution;
+            (ok, solution) = solver.Solve();
+            if (!ok)
+            {
+                CurrentPosLabel.Content = $"No solution : {solution}";
+                return;
+            }
+
+            int curPos = MovesTextBox.SelectionStart;
+            MovesTextBox.Text = MovesTextBox.Text[..curPos] + solution;
+            MovesTextBox.SelectionStart = curPos;
+            MovesTextBox.Focus();
+        }
     }
 }
